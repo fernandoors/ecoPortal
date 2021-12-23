@@ -1,3 +1,3 @@
-export * from './slices';
+export * from './modules';
 export { createStore, useAppDispatch, useAppSelector } from './store';
 export type { RootState, AppDispatch } from './store';

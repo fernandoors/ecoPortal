@@ -1,20 +1,30 @@
 import { css } from "@emotion/react";
-import {
-  Button,
-  Paper,
-  TextField,
-  Tooltip,
-  Typography,
-  Zoom,
-} from "@mui/material";
+import { Button, Paper, TextField, Typography, Zoom } from "@mui/material";
 import type { NextPage } from "next";
-import { exampleActions, useAppDispatch, useAppSelector } from "../redux";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import MovieCard from "../components/MovieCard";
+import {
+  movieActions,
+  useAppDispatch,
+  useAppSelector,
+  MoviewState,
+  TMovie,
+} from "../redux";
 
 const primary = "#5ea94c";
+/**
+ *  PAGE REDIRECT TO REVIEW BY NEXT CONFIG
+ *
+ */
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/reviews");
+  }, [router]);
   const dispatch = useAppDispatch();
-  const exampleState = useAppSelector((state) => state.example);
+  const movieState: MoviewState = useAppSelector((state) => state.movie);
   return (
     <div css={styles.root}>
       <Paper elevation={3} css={styles.navBar}>
@@ -33,37 +43,30 @@ const Home: NextPage = () => {
         </Typography>
 
         <div css={styles.mainControls}>
-          <Tooltip
-            title={`Side Effect Count from Epic (Gets run on odd values): ${exampleState.sideEffectCount}`}
-            arrow
-          >
-            <Button
-              variant={"contained"}
-              onClick={() => dispatch(exampleActions.increment())}
-            >
-              {`Redux Increment: ${exampleState.value}`}
-            </Button>
-          </Tooltip>
           <Button
             variant={"outlined"}
-            onClick={() =>
+            onClick={() => {
               dispatch(
-                exampleState.fetchData
-                  ? exampleActions.clearData()
-                  : exampleActions.fetch()
-              )
-            }
+                movieState.movies
+                  ? movieActions.clearData()
+                  : movieActions.fetch()
+              );
+            }}
           >
-            {exampleState.fetchData ? "Hide some data" : "Fetch some data"}
+            {movieState.movies ? "Hide some data" : "Fetch some data"}
           </Button>
         </div>
 
-        <Zoom in={Boolean(exampleState.fetchData)} unmountOnExit mountOnEnter>
+        {movieState.movies &&
+          movieState.movies.allMovies.nodes.map((movie: TMovie) => (
+            <MovieCard key={movie.id} movie={movie} />
+          ))}
+        <Zoom in={Boolean(movieState.movies)} unmountOnExit mountOnEnter>
           <TextField
             css={styles.dataInput}
             multiline
             label={"Some Data"}
-            defaultValue={JSON.stringify(exampleState.fetchData)}
+            defaultValue={JSON.stringify(movieState.movies)}
           />
         </Zoom>
       </div>

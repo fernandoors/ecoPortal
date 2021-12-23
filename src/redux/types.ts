@@ -7,3 +7,7 @@ export type CreateStoreOptions = {
 export type EpicDependencies = {
   client: ApolloClient<NormalizedCacheObject>;
 };
+
+export interface Nodes<T> {
+  nodes: T[]
+}
